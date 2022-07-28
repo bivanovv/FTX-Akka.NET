@@ -11,6 +11,8 @@ public interface IFeedPublisherSettings
 
     string Channel { get; set; }
 
+    string? Market { get; set; }
+
     bool AuthenticateFeed { get; set; }
 
     TimeSpan HeartbeatInterval { get; set; }
@@ -44,6 +46,7 @@ public sealed class DefaultFeedPublisherSettings : IFeedPublisherSettings
     public GdaxRealtimeFeedClient Client { get; set; }
     public TimeSpan ConnectTimeout { get; set; }
     public string Channel { get; set; }
+    public string? Market { get; set; }
     public bool AuthenticateFeed { get; set; }
     public TimeSpan HeartbeatInterval { get; set; }
     public bool TrackHeartbeats { get; set; }

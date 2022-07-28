@@ -29,10 +29,9 @@ internal class Program
 
         using var system = ActorSystem.Create("FTXDemo");
         var client = CreateLiveSocketFeed();
-
-        //var products = new List<string>(new[] { "BTC-USDT" });
+        
         var feed = new GdaxFeed(system, client);
-        var sub = feed.Subscribe("ticker", false, true);
+        var sub = feed.Subscribe("ticker", "BTC/USD", false, true);
 
         var consoleWriterActor = system.ActorOf(Props.Create(() => new ConsoleWriterActor()));
         var sink = Sink.ActorRef<IFeedMessage>(consoleWriterActor, "true");

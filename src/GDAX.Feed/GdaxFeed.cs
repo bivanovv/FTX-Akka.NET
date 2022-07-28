@@ -24,15 +24,15 @@ public sealed class GdaxFeed
     
     public GdaxRealtimeFeedClient RealtimeClient { get; }
     
-    public (Source<IFeedMessage, NotUsed> source, IActorRef sourceActor) Subscribe(string channel,
+    public (Source<IFeedMessage, NotUsed> source, IActorRef sourceActor) Subscribe(string channel, string? market,
         bool authenticate, bool heartbeat, string? feedName = null,
         ILoggingAdapter? log = null)
     {
-        return Subscribe(channel, DefaultFeedPublisherSettings.DefaultHeartbeatInterval, authenticate, heartbeat, feedName,
+        return Subscribe(channel, market, DefaultFeedPublisherSettings.DefaultHeartbeatInterval, authenticate, heartbeat, feedName,
             log);
     }
 
-    public (Source<IFeedMessage, NotUsed> source, IActorRef sourceActor) Subscribe(string channel,
+    public (Source<IFeedMessage, NotUsed> source, IActorRef sourceActor) Subscribe(string channel, string? market,
         TimeSpan heartbeatInterval, bool authenticate, bool heartbeat, string? feedName = null, ILoggingAdapter? log = null)
     {
         var settings = new DefaultFeedPublisherSettings
@@ -42,6 +42,7 @@ public sealed class GdaxFeed
             AuthenticateFeed = authenticate,
             Client = RealtimeClient,
             Channel = channel,
+            Market = market,
             ConnectTimeout = DefaultFeedPublisherSettings.DefaultConnectTimeout
         };
 

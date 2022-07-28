@@ -17,6 +17,7 @@ public sealed class GdaxFeedReader : UntypedActor, IWithUnboundedStash
     private readonly bool _authenticate;
     private readonly byte[] _buffer;
     private readonly string _channel;
+    private readonly string? _market;
     private readonly TimeSpan _connectTimeout;
     private readonly bool _heartbeat;
     private readonly ILoggingAdapter _log = Context.GetLogger();
@@ -39,6 +40,7 @@ public sealed class GdaxFeedReader : UntypedActor, IWithUnboundedStash
         _authenticate = settings.AuthenticateFeed;
         _heartbeat = settings.TrackHeartbeats;
         _channel = settings.Channel;
+        _market = settings.Market;
         _publisherRef = publisherRef;
         _buffer = new byte[settings.BufferSize];
         Become(Connecting);
@@ -101,8 +103,8 @@ public sealed class GdaxFeedReader : UntypedActor, IWithUnboundedStash
         switch (message)
         {
             case SocketOpen s:
-                _socket = s.Socket; //TODO
-                _realTime.Subscribe(_channel, "BAT/JPY", _socket, new CancellationToken(), _authenticate, _heartbeat)
+                _socket = s.Socket;
+                _realTime.Subscribe(_channel, _market, _socket, new CancellationToken(), _authenticate, _heartbeat)
                     .ContinueWith<object>(tr =>
                     {
                         if (tr.IsCanceled)
