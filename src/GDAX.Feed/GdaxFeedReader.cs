@@ -110,14 +110,14 @@ public sealed class GdaxFeedReader : UntypedActor, IWithUnboundedStash
                         if (tr.IsCanceled)
                         {
                             return new SubscribeFailed(
-                                $"Subscription to price feed for channel [{string.Join(",", _channel)}] timed out",
+                                $"Subscription to websocket feed for channel [{string.Join(",", _channel)}] timed out",
                                 tr.Exception);
                         }
 
                         if (tr.IsFaulted)
                         {
                             return new SubscribeFailed(
-                                $"Failed to subscribe to price feed for channel [{string.Join(",", _channel)}]",
+                                $"Failed to subscribe to websocket feed for channel [{string.Join(",", _channel)}]",
                                 tr.Exception);
                         }
 
@@ -142,7 +142,7 @@ public sealed class GdaxFeedReader : UntypedActor, IWithUnboundedStash
                 _log.Error(fail.Ex, fail.Message);
                 throw fail.Ex;
             case Subscribed s:
-                _log.Info("Successfully connected to price feed for channel [{0}]", string.Join(",", _channel));
+                _log.Info("Successfully connected to websocket feed for channel [{0}]", string.Join(",", _channel));
                 Become(OnReceive);
                 Stash.UnstashAll();
                 _readToken = BeginRead();

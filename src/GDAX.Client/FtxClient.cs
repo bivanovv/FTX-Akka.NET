@@ -41,6 +41,6 @@ public class FtxClient
     /// <returns>A custom JsonSerializerSettings class.</returns>
     internal static JsonSerializerOptions CreateSerializerSettings()
     {
-        return new JsonSerializerOptions { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull};
+        return new JsonSerializerOptions { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault, NumberHandling = JsonNumberHandling.AllowReadingFromString };
     }
 }

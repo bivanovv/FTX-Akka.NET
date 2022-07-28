@@ -31,7 +31,8 @@ internal class Program
         var client = CreateLiveSocketFeed();
         
         var feed = new GdaxFeed(system, client);
-        var sub = feed.Subscribe("ticker", "BTC/USD", false, true);
+        //var sub = feed.Subscribe("ticker", "BTC/USD", false, true);
+        var sub = feed.Subscribe("fills", null, true, true);
 
         var consoleWriterActor = system.ActorOf(Props.Create(() => new ConsoleWriterActor()));
         var sink = Sink.ActorRef<IFeedMessage>(consoleWriterActor, "true");
@@ -47,7 +48,7 @@ internal class Program
     {
         protected override void OnReceive(object message)
         {
-            Log.Information(message.ToString());
+            //Log.Information(message.ToString());
             if (message is Error error)
             {
                 Log.Information("ERROR | {@Data}", error);
@@ -57,6 +58,12 @@ internal class Program
             if (message is Ticker ticker)
             {
                 Log.Information("TICKER | {@Data}", ticker);
+                return;
+            }
+
+            if (message is UserFill userFill)
+            {
+                Log.Information("USER FILL | {@Data}", userFill);
                 return;
             }
 

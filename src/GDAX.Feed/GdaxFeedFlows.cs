@@ -14,12 +14,30 @@ namespace GDAX.Feed;
 /// </summary>
 public static class GdaxFeedFlows
 {
-    public static Flow<string, IFeedMessage, NotUsed> JsonDeserializeFlow(ILoggingAdapter? log = null)
+    public static Flow<IFeedMessage, IFeedMessage, NotUsed> FilterEmpty()
     {
-        return Flow.FromFunction<string, IFeedMessage>(str => ParseFeedMessage(str, log)).Async();
+        return Flow.Create<IFeedMessage>().WhereNot(FilterEmpty);
     }
 
-    public static IFeedMessage ParseFeedMessage(string input, ILoggingAdapter? log = null)
+    /// <summary>
+    ///     Used to pipe heartbeats to a specified target actor.
+    /// </summary>
+    /// <remarks>
+    ///     Intended to act as a trigger mechanism for rebooting a downed FTX feed in the event that there's trouble.
+    /// </remarks>
+    /// <param name="heartbeatReceiver">The actor who will receive the heartbeat notifications.</param>
+    /// <returns>A new flow.</returns>
+    public static Flow<IFeedMessage, IFeedMessage, NotUsed> FilterHeartbeats(IActorRef heartbeatReceiver)
+    {
+        return Flow.FromFunction<IFeedMessage, IFeedMessage>(m => FilterHeartbeat(heartbeatReceiver, m));
+    }
+
+    public static Flow<string, IFeedMessage, NotUsed> JsonDeserializeFlow(JsonSerializerOptions jsonSerializerOptions, ILoggingAdapter? log = null)
+    {
+        return Flow.FromFunction<string, IFeedMessage>(str => ParseFeedMessage(str, jsonSerializerOptions, log)).Async();
+    }
+
+    private static IFeedMessage ParseFeedMessage(string input, JsonSerializerOptions jsonSerializerOptions, ILoggingAdapter? log = null)
     {
         using var document = JsonDocument.Parse(input);
         var rootElement = document.RootElement;
@@ -30,47 +48,44 @@ public static class GdaxFeedFlows
         {
             var type = typeElement.GetString();
 
-            if (type == "error") return rootElement.Deserialize<Error>()!;
-
-            if (document.RootElement.TryGetProperty("channel", out var channelElement))
+            if (type != "update" && type != "partial")
             {
-                var channel = channelElement.GetString();
-
-                switch (channel)
+                switch (type)
                 {
-                    //case "fills":
-                    //    msg = new UserFill(jtoken);
-                    //    break;
-                    case "ticker":
-                        msg = rootElement.Deserialize<Ticker>()!;
+                    case "error":
+                        msg = rootElement.Deserialize<Error>(jsonSerializerOptions)!;
                         break;
                     case "subscribed":
-                        msg = rootElement.Deserialize<SubscribedResponse>()!;
+                        msg = rootElement.Deserialize<SubscribedResponse>(jsonSerializerOptions)!;
                         break;
                     case "pong":
-                        msg = rootElement.Deserialize<Heartbeat>()!;
+                        msg = rootElement.Deserialize<Heartbeat>(jsonSerializerOptions)!;
                         break;
                     default:
                         log?.Warning("Unrecognized message type: [{0}]. Full message: {1}", type, input);
                         break;
                 }
             }
+            else if (document.RootElement.TryGetProperty("channel", out var channelElement))
+            {
+                var channel = channelElement.GetString();
+
+                switch (channel)
+                {
+                    case "fills":
+                        msg = rootElement.Deserialize<UserFill>(jsonSerializerOptions)!;
+                        break;
+                    case "ticker":
+                        msg = rootElement.Deserialize<Ticker>(jsonSerializerOptions)!;
+                        break;
+                    default:
+                        log?.Warning("Unrecognized message channel: [{0}]. Full message: {1}", channel, input);
+                        break;
+                }
+            }
         }
 
         return msg;
-    }
-
-    /// <summary>
-    ///     Used to pipe heartbeats to a specified target actor.
-    /// </summary>
-    /// <remarks>
-    ///     Intended to act as a trigger mechanism for rebooting a downed GDAX feed in the event that there's trouble.
-    /// </remarks>
-    /// <param name="heartbeatReceiver">The actor who will receive the heartbeat notifications.</param>
-    /// <returns>A new flow.</returns>
-    public static Flow<IFeedMessage, IFeedMessage, NotUsed> FilterHeartbeats(IActorRef heartbeatReceiver)
-    {
-        return Flow.FromFunction<IFeedMessage, IFeedMessage>(m => FilterHeartbeat(heartbeatReceiver, m));
     }
 
     private static IFeedMessage FilterHeartbeat(IActorRef heartbeatReceiver, IFeedMessage m)
@@ -82,11 +97,6 @@ public static class GdaxFeedFlows
         }
 
         return m;
-    }
-
-    public static Flow<IFeedMessage, IFeedMessage, NotUsed> FilterEmpty()
-    {
-        return Flow.Create<IFeedMessage>().WhereNot(FilterEmpty);
     }
 
     private static bool FilterEmpty(IFeedMessage m)

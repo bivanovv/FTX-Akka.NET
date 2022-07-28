@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Akka;
 using Akka.Actor;
 using Akka.Event;
@@ -58,21 +59,21 @@ public sealed class GdaxFeed
             Source.FromPublisher(ActorPublisher.Create<string>(publisherRef))
                 .MapMaterializedValue(_ => publisherRef);
 
-        var graph = CreateGraph(publisher, settings.TrackHeartbeats, publisherRef, log);
+        var graph = CreateGraph(publisher, RealtimeClient.SerializerSettings, settings.TrackHeartbeats, publisherRef, log);
 
         var s = Source.FromGraph(graph);
 
         return (s, publisherRef);
     }
 
-    internal static IGraph<SourceShape<IFeedMessage>, NotUsed> CreateGraph<TMat>(Source<string, TMat> publisher,
+    internal static IGraph<SourceShape<IFeedMessage>, NotUsed> CreateGraph<TMat>(Source<string, TMat> publisher, JsonSerializerOptions jsonSerializerOptions,
         bool heartbeat = false, IActorRef? heartbeatTarget = null, ILoggingAdapter? log = null)
     {
         var graph = GraphDsl.Create(builder =>
         {
             var origSource = builder.Add(publisher);
             var filter = builder.Add(Flow.Create<string, string>().WhereNot(string.IsNullOrEmpty));
-            var serializer = builder.Add(GdaxFeedFlows.JsonDeserializeFlow(log));
+            var serializer = builder.Add(GdaxFeedFlows.JsonDeserializeFlow(jsonSerializerOptions, log));
 
             builder.From(origSource.Outlet).To(filter.Inlet);
             builder.From(filter.Outlet).To(serializer.Inlet);

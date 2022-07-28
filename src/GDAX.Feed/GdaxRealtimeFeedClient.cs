@@ -51,6 +51,13 @@ public class GdaxRealtimeFeedClient
         Contract.Assert(!string.IsNullOrWhiteSpace(channel), "Need to provide a channel");
         Contract.Assert(socket.State == WebSocketState.Open, "socket.State must == WebSocketState.Open");
 
+        if (authenticate)
+        {
+            var time = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            var loginRequest = new LoginRequest(Credentials.ApiKey, AuthenticationHelper.Sign(Credentials.Secret, $"{time}websocket_login"), time, null); // TODO: subaccount
+            await SendAsync(socket, loginRequest, cts);
+        }
+
         var subscribeRequest = new SubscribeRequest(channel, symbol);
 
         //if (heartbeat)
@@ -61,20 +68,14 @@ public class GdaxRealtimeFeedClient
         //    };
         //}
 
-        if (authenticate)
-        {
-            //var timestamp = TimestampProvider.CurrentUnixEpoch().ToString(CultureInfo.InvariantCulture);
-            //;
-            //subscribe.timestamp = timestamp;
-            //subscribe.key = Credentials.ApiKey;
-            //subscribe.passphrase = Credentials.PassPhrase;
-            //var signature = Signer.Sign(timestamp, "GET", "/users/self/", string.Empty);
-            //subscribe.signature = signature;
-        }
+        await SendAsync(socket, subscribeRequest, cts);
+        return socket;
+    }
 
-        var json = JsonSerializer.Serialize(subscribeRequest, SerializerSettings);
+    private async Task SendAsync(WebSocket socket, SocketRequest socketRequest, CancellationToken cts)
+    {
+        var json = JsonSerializer.Serialize(socketRequest, socketRequest.GetType(), SerializerSettings);
         var body = Encoding.UTF8.GetBytes(json);
         await socket.SendAsync(new ArraySegment<byte>(body), WebSocketMessageType.Text, true, cts);
-        return socket;
     }
 }
