@@ -1,11 +1,9 @@
 using System.Diagnostics.Contracts;
-using System.Globalization;
 using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
 using GDAX.Client;
 using GDAX.Client.Auth;
-using GDAX.Client.Http;
 using GDAX.Feed.Msgs;
 
 namespace GDAX.Feed;
@@ -20,17 +18,15 @@ public class GdaxRealtimeFeedClient
         HttpClient = httpClient;
     }
 
+    public WebSocket Socket { get; set; }
+
     public FtxClient HttpClient { get; }
 
     public FtxEndpoints Endpoints => HttpClient.Endpoints;
 
     public FtxCredentials Credentials => HttpClient.Credentials;
-
-    internal TimestampProvider TimestampProvider => HttpClient.RequestBuilder.TimestampProvider;
-
+    
     public JsonSerializerOptions SerializerSettings => HttpClient.SerializationSettings;
-
-    internal RequestSigner Signer => HttpClient.RequestBuilder.Signer;
 
     public Task<WebSocket> Connect(TimeSpan? connectTimeout = null)
     {
@@ -59,23 +55,22 @@ public class GdaxRealtimeFeedClient
         }
 
         var subscribeRequest = new SubscribeRequest(channel, symbol);
-
-        //if (heartbeat)
-        //{
-        //    subscribe.channels = new List<Channel>
-        //    {
-        //        new() { name = "ticker", product_ids = p }
-        //    };
-        //}
-
         await SendAsync(socket, subscribeRequest, cts);
         return socket;
     }
 
-    private async Task SendAsync(WebSocket socket, SocketRequest socketRequest, CancellationToken cts)
+    public async Task SendAsync(WebSocket socket, SocketRequest socketRequest, CancellationToken cts)
     {
         var json = JsonSerializer.Serialize(socketRequest, socketRequest.GetType(), SerializerSettings);
         var body = Encoding.UTF8.GetBytes(json);
         await socket.SendAsync(new ArraySegment<byte>(body), WebSocketMessageType.Text, true, cts);
+    }
+
+    // Used for sending pings
+    public async Task SendAsync(SocketRequest socketRequest)
+    {
+        var json = JsonSerializer.Serialize(socketRequest, socketRequest.GetType(), SerializerSettings);
+        var body = Encoding.UTF8.GetBytes(json);
+        await Socket.SendAsync(new ArraySegment<byte>(body), WebSocketMessageType.Text, true, CancellationToken.None);
     }
 }

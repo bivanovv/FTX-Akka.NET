@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using GDAX.Messages.Orders;
+using FTX.Messages.Orders;
 
 namespace GDAX.Feed.Msgs;
 

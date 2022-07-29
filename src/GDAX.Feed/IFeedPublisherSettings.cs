@@ -28,7 +28,7 @@ public interface IFeedPublisherSettings
 public sealed class DefaultFeedPublisherSettings : IFeedPublisherSettings
 {
     public const int DefaultBufferSize = 1024 * 1024 * 4; //4mb
-    public static readonly TimeSpan DefaultHeartbeatInterval = TimeSpan.FromSeconds(15); //3.5
+    public static readonly TimeSpan DefaultHeartbeatInterval = TimeSpan.FromSeconds(5); //3.5
 
 
     /// <summary>

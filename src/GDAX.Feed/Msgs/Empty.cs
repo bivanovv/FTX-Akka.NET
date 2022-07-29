@@ -1,4 +1,4 @@
-using GDAX.Messages;
+using FTX.Messages;
 
 namespace GDAX.Feed.Msgs;
 

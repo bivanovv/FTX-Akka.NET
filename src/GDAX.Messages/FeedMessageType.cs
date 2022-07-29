@@ -1,7 +1,7 @@
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
-namespace GDAX.Messages;
+namespace FTX.Messages;
 
 /// <summary>
 ///     The types of feed messages that can be received by the API
@@ -25,5 +25,8 @@ public enum FeedMessageType
     Partial,
 
     [EnumMember(Value = "update")]
-    Update
+    Update,
+
+    [EnumMember(Value = "pong")]
+    Pong
 }

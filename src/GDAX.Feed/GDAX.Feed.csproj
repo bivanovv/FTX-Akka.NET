@@ -12,7 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GDAX.Client\GDAX.Client.csproj" />
-    <ProjectReference Include="..\GDAX.Messages\GDAX.Messages.csproj" />
+    <ProjectReference Include="..\GDAX.Messages\FTX.Messages.csproj" />
   </ItemGroup>
 
 </Project>

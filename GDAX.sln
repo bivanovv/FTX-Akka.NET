@@ -10,7 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GDAX.Client", "src\GDAX.Client\GDAX.Client.csproj", "{5617B3D6-1A9A-477A-9C7C-48194CFCE96F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GDAX.Messages", "src\GDAX.Messages\GDAX.Messages.csproj", "{7A2B9FE8-A268-4CA4-B60A-86F1A553F4D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FTX.Messages", "src\GDAX.Messages\FTX.Messages.csproj", "{7A2B9FE8-A268-4CA4-B60A-86F1A553F4D9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GDAX.Feed", "src\GDAX.Feed\GDAX.Feed.csproj", "{28EF6C9D-8AD5-4DA2-ADB8-A0FA534E76E6}"
 EndProject

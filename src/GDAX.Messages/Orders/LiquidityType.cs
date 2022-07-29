@@ -1,7 +1,7 @@
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
-namespace GDAX.Messages.Orders;
+namespace FTX.Messages.Orders;
 
 [JsonConverter(typeof(JsonStringEnumMemberConverter))]
 public enum LiquidityType

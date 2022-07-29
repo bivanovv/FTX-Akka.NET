@@ -5,8 +5,8 @@ using Akka.Event;
 using Akka.Streams;
 using Akka.Streams.Actors;
 using Akka.Streams.Dsl;
+using FTX.Messages;
 using GDAX.Client;
-using GDAX.Messages;
 
 namespace GDAX.Feed;
 

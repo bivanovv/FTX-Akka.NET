@@ -1,4 +1,4 @@
-namespace GDAX.Messages;
+namespace FTX.Messages;
 
 /// <inheritdoc />
 /// <summary>

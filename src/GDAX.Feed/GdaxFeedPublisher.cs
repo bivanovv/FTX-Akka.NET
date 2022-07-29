@@ -34,6 +34,7 @@ public sealed class GdaxFeedPublisher : ActorPublisher<string>, IWithUnboundedSt
     private DateTime _lastHeartbeat = DateTime.UtcNow;
 
     private IActorRef? _feedReader;
+    private ICancelable? _sendPing;
     private ICancelable? _heartbeatCheck;
     private ICancelable? _connectCheck;
 
@@ -103,6 +104,7 @@ public sealed class GdaxFeedPublisher : ActorPublisher<string>, IWithUnboundedSt
     protected override void PostStop()
     {
         _connectCheck?.Cancel();
+        _sendPing?.Cancel();
         _heartbeatCheck?.Cancel();
     }
 
@@ -114,6 +116,9 @@ public sealed class GdaxFeedPublisher : ActorPublisher<string>, IWithUnboundedSt
                 // we've successfully subscribed to the feed
                 if (_heartbeat)
                 {
+                    _sendPing = Context.System.Scheduler.ScheduleTellRepeatedlyCancelable(_heartbeatInterval, 
+                        _heartbeatInterval, Self, SendPing.Instance, ActorRefs.NoSender);
+
                     _heartbeatCheck = Context.System.Scheduler.ScheduleTellRepeatedlyCancelable(_heartbeatInterval,
                         _heartbeatInterval, Self, CheckHeartbeat.Instance, ActorRefs.NoSender);
 
@@ -176,6 +181,11 @@ public sealed class GdaxFeedPublisher : ActorPublisher<string>, IWithUnboundedSt
             case Cancel cancel:
                 // do nothing
                 break;
+            case SendPing sendPing:
+                // Send ping
+                Console.WriteLine("Sending ping " + DateTime.UtcNow);
+                _realTime.SendAsync(new SocketRequest("ping"));
+                break;
             case CheckHeartbeat check when HeartbeatOk:
                 // do nothing
                 break;
@@ -225,6 +235,9 @@ public sealed class GdaxFeedPublisher : ActorPublisher<string>, IWithUnboundedSt
 
         // terminate heartbeats
         _heartbeatCheck?.Cancel();
+
+        // terminate ping sending
+        _sendPing?.Cancel();
     }
 
     private void DeliverBuffer()
@@ -291,6 +304,15 @@ public sealed class GdaxFeedPublisher : ActorPublisher<string>, IWithUnboundedSt
         public static readonly CheckHeartbeat Instance = new();
 
         private CheckHeartbeat()
+        {
+        }
+    }
+
+    internal sealed class SendPing
+    {
+        public static readonly SendPing Instance = new();
+
+        private SendPing()
         {
         }
     }

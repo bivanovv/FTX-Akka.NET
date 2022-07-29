@@ -4,6 +4,7 @@ using System.Text;
 using Akka.Actor;
 using Akka.Event;
 using GDAX.Client;
+using GDAX.Feed.Msgs;
 
 namespace GDAX.Feed;
 
@@ -104,6 +105,7 @@ public sealed class GdaxFeedReader : UntypedActor, IWithUnboundedStash
         {
             case SocketOpen s:
                 _socket = s.Socket;
+                _realTime.Socket = s.Socket;
                 _realTime.Subscribe(_channel, _market, _socket, new CancellationToken(), _authenticate, _heartbeat)
                     .ContinueWith<object>(tr =>
                     {
@@ -249,7 +251,7 @@ public sealed class GdaxFeedReader : UntypedActor, IWithUnboundedStash
             ShutdownIfPayloadTooLarge(index + MaxMessageSize);
         }
 
-        var cts = new CancellationTokenSource(TimeSpan.FromSeconds(3));
+        var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10)); // Make sure this is bigger than the ping interval
         if (_socket.State == WebSocketState.Open)
         {
             _socket.ReceiveAsync(new ArraySegment<byte>(_buffer, index, MaxMessageSize), cts.Token)

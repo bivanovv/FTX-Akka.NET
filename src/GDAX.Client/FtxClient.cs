@@ -1,7 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using GDAX.Client.Auth;
-using GDAX.Client.Http;
 
 namespace GDAX.Client;
 
@@ -10,8 +9,6 @@ namespace GDAX.Client;
 /// </summary>
 public class FtxClient
 {
-    public readonly GdaxRequestBuilder RequestBuilder;
-
     /// <summary>
     ///     JsonSerializeSettings configured specifically for working with FTX.
     /// </summary>
@@ -21,7 +18,6 @@ public class FtxClient
     {
         Credentials = credentials;
         Endpoints = endpoints;
-        RequestBuilder = new GdaxRequestBuilder(Credentials, TimestampProvider.Default, Endpoints);
         SerializationSettings = CreateSerializerSettings();
     }
 

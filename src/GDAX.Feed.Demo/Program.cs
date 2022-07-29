@@ -1,11 +1,11 @@
 using Akka.Actor;
 using Akka.Streams;
 using Akka.Streams.Dsl;
+using FTX.Messages;
 using GDAX.Client;
 using GDAX.Client.Auth;
 using GDAX.Feed;
 using GDAX.Feed.Msgs;
-using GDAX.Messages;
 using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
 

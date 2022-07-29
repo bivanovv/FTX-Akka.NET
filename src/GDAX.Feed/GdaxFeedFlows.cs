@@ -3,8 +3,8 @@ using Akka;
 using Akka.Actor;
 using Akka.Event;
 using Akka.Streams.Dsl;
+using FTX.Messages;
 using GDAX.Feed.Msgs;
-using GDAX.Messages;
 using Error = GDAX.Feed.Msgs.Error;
 
 namespace GDAX.Feed;
