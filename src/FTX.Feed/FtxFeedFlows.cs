@@ -52,7 +52,7 @@ public static class FtxFeedFlows
             {
                 switch (type)
                 {
-                    case "error":
+                    case "error" or "info":
                         msg = rootElement.Deserialize<Error>(jsonSerializerOptions)!;
                         break;
                     case "subscribed":
