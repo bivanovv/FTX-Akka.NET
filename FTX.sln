@@ -1,0 +1,48 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32616.157
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{438CE35A-C04B-4D12-BB96-89B05973DBDF}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FTX.Messages", "src\FTX.Messages\FTX.Messages.csproj", "{7A2B9FE8-A268-4CA4-B60A-86F1A553F4D9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FTX.Feed.Demo", "src\FTX.Feed.Demo\FTX.Feed.Demo.csproj", "{88A3A5D1-A602-4BFC-8B7A-BC711D5AE692}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FTX.Feed", "src\FTX.Feed\FTX.Feed.csproj", "{C00081E0-E70C-476B-8D18-43A51610CCD0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FTX.Client", "src\FTX.Client\FTX.Client.csproj", "{908F9C56-DE94-4749-81B9-31210E513EFD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7A2B9FE8-A268-4CA4-B60A-86F1A553F4D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A2B9FE8-A268-4CA4-B60A-86F1A553F4D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A2B9FE8-A268-4CA4-B60A-86F1A553F4D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A2B9FE8-A268-4CA4-B60A-86F1A553F4D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88A3A5D1-A602-4BFC-8B7A-BC711D5AE692}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88A3A5D1-A602-4BFC-8B7A-BC711D5AE692}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88A3A5D1-A602-4BFC-8B7A-BC711D5AE692}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88A3A5D1-A602-4BFC-8B7A-BC711D5AE692}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C00081E0-E70C-476B-8D18-43A51610CCD0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C00081E0-E70C-476B-8D18-43A51610CCD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C00081E0-E70C-476B-8D18-43A51610CCD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C00081E0-E70C-476B-8D18-43A51610CCD0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{908F9C56-DE94-4749-81B9-31210E513EFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{908F9C56-DE94-4749-81B9-31210E513EFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{908F9C56-DE94-4749-81B9-31210E513EFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{908F9C56-DE94-4749-81B9-31210E513EFD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1765975A-10C3-4008-96B9-A96F386C4B86}
+	EndGlobalSection
+EndGlobal

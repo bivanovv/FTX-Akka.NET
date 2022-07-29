@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Akka.Streams" Version="1.4.40" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FTX.Client\FTX.Client.csproj" />
+    <ProjectReference Include="..\FTX.Messages\FTX.Messages.csproj" />
+  </ItemGroup>
+
+</Project>
